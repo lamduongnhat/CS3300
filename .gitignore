@@ -1,0 +1,14 @@
+# --- Backend (Flask) ---
+venv/
+__pycache__/
+*.py[cod]
+ENV.yaml      # Assuming this contains secret environment configs
+*.db          # If you have local SQLite files
+
+# --- Frontend (React) ---
+flask-server/client/node_modules/
+flask-server/client/build/
+flask-server/client/.env*
+
+# --- System ---
+.DS_Store
