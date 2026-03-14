@@ -12,8 +12,8 @@ with open("ENV.yaml", "r") as f:
 
 mydb = mysql.connector.connect(
     host=db["HOST"],
-    user=db["USER"],  # replace with your user log in
-    database=db["DB"],  # replace with your databasename
+    user=db["USER"],
+    database=db["DB"],
     password=db["PASSWORD"],
 )
 mycursor = mydb.cursor()
