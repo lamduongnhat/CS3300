@@ -18,11 +18,7 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
-mycursor.execute("""select u.UserID, s.first_name, s.last_name, v.VidID, v.Title
-    from Student s 
-    join Users u on s.StudentID = u.UserID
-    join Watch_Record wr on wr.UserID = u.UserID
-    join Video v on v.VidID = wr.VidID;""")
+mycursor.execute("""select * from Users""")
 
 result = mycursor.fetchall()
 
@@ -60,26 +56,50 @@ def Log_In_Validation():
 
 @app.route('/SignUp', methods=["POST"])
 def Sign_Up_Validation():
-    valid: bool = True
-
+    sql = ""
     data = request.get_json()
 
     userID = "U" + str(random.randint(1, 1000000000))
     username = data.get("Username")
     password = data.get("Password")
-    first_name = data.get("Password")
-    last_name = input("Enter last name: ")
-    age = input("Enter age: ")
-    userSelectRole = input("Select your role Student [1] or Instructor [2]: ")
-    majorOrSpecialty = input("EnterMajor: ")
+    first_name = data.get("First_Name")
+    last_name = data.get("Last_Name")
+    age = data.get("Age")
+    userSelectRole = data.get("UserRole")
+    majorOrSpecialty = data.get("MajorOrSpecialty")
 
-    query = """select User_Password
-    from Users
-    where Username = %s;"""
+    if userSelectRole == "student":
+        sql = """
+        insert into Student(StudentID,first_name, last_name, Student_Age, Major) 
+        values (%s,%s,%s,%s,%s)
+        """
+    elif userSelectRole == "instructor":
+        sql = """
+        insert into Instructor(InstructorID,first_name, last_name, Instructor_Age, Specialty) 
+        values (%s,%s,%s,%s,%s)
+        """
+    else:
+        return jsonify("Please pick a role!")
 
-    mycursor.execute(query, (username,))
+    query = "select * from Users where Username = %s"
+    mycursor.execute(query, (username, ))
+    result = mycursor.fetchall()
 
-    return 'test'
+    if (result is not None):
+        return jsonify("Username already exits!")
+    
+    query = "insert into Users(UserID,Username,User_Password,User_Role) values (%s,%s,%s,%s)"
+    val = (userID, username, password, userSelectRole)
+
+    mycursor.execute(query, val)
+    mydb.commit()
+
+    val = (userID, first_name, last_name, age, majorOrSpecialty)
+
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+    return jsonify(True)
 
 if __name__ == "__main__":
     app.run(debug=True)
