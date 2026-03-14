@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 import yaml
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -37,7 +38,7 @@ def Log_In_Validation():
 
     data = request.get_json()
 
-    # 2. Extract specific fields using the keys from your React 'formData'
+    # Extract specific fields using the keys from your React 'formData'
     username = data.get("Username")
     password = data.get("Password")
 
@@ -57,6 +58,28 @@ def Log_In_Validation():
 
     return jsonify(valid)
 
+@app.route('/SignUp', methods=["POST"])
+def Sign_Up_Validation():
+    valid: bool = True
+
+    data = request.get_json()
+
+    userID = "U" + str(random.randint(1, 1000000000))
+    username = data.get("Username")
+    password = data.get("Password")
+    first_name = data.get("Password")
+    last_name = input("Enter last name: ")
+    age = input("Enter age: ")
+    userSelectRole = input("Select your role Student [1] or Instructor [2]: ")
+    majorOrSpecialty = input("EnterMajor: ")
+
+    query = """select User_Password
+    from Users
+    where Username = %s;"""
+
+    mycursor.execute(query, (username,))
+
+    return 'test'
 
 if __name__ == "__main__":
     app.run(debug=True)
