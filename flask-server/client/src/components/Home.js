@@ -1,8 +1,5 @@
-import React from "react";
-import "../App.css"
-
 function Home() {
-  return <div>Home</div>;
+  return <h1>THIS PAGE UPDATED</h1>;
 }
 
 export default Home;
